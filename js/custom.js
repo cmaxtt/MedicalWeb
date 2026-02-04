@@ -29,16 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('header');
   if (header) {
     let lastScrollTop = 0;
-    
+
     window.addEventListener('scroll', () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
+
       if (scrollTop > 100) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
-      
+
       // Hide/show header on scroll direction (optional)
       if (scrollTop > lastScrollTop && scrollTop > 200) {
         // Scrolling down
@@ -47,28 +47,28 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scrolling up
         header.style.transform = 'translateY(0)';
       }
-      
+
       lastScrollTop = scrollTop;
     });
   }
 
   // Smooth scrolling for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
-      
+
       // Skip if href is just '#'
       if (href === '#') return;
-      
+
       const targetElement = document.querySelector(href);
       if (targetElement) {
         e.preventDefault();
-        
+
         window.scrollTo({
           top: targetElement.offsetTop - 80,
           behavior: 'smooth'
         });
-        
+
         // Close mobile navbar if open
         const navbarToggler = document.querySelector('.navbar-toggler');
         const navbarCollapse = document.getElementById('navmenu');
@@ -82,15 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Form validation for appointment and contact forms
   const appointmentForm = document.getElementById('appointment-form');
   const contactForm = document.getElementById('contact-form');
-  
+
   function validateForm(form) {
     let isValid = true;
     const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
-    
+
     inputs.forEach(input => {
       // Reset previous error states
       input.classList.remove('is-invalid');
-      
+
       if (!input.value.trim()) {
         input.classList.add('is-invalid');
         isValid = false;
@@ -108,31 +108,127 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
-    
+
     return isValid;
   }
-  
+
   if (appointmentForm) {
-    appointmentForm.addEventListener('submit', function(e) {
+    appointmentForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
       if (!validateForm(this)) {
-        e.preventDefault();
-        // Show error message
+        // Show error message if validation fails
         const errorAlert = this.querySelector('.alert-danger') || createErrorAlert(this);
         errorAlert.classList.remove('d-none');
+        return;
       }
+
+      // Hide error messages
+      const errorAlert = this.querySelector('.alert-danger');
+      if (errorAlert) errorAlert.classList.add('d-none');
+
+      // Show loading state (if elements exist)
+      const loading = this.querySelector('.loading');
+      const sentMessage = this.querySelector('.sent-message');
+      const errorMessage = this.querySelector('.error-message');
+
+      if (loading) loading.style.display = 'block';
+      if (sentMessage) sentMessage.style.display = 'none';
+      if (errorMessage) errorMessage.style.display = 'none';
+
+      // Gather form data
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      // Send to API
+      fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (loading) loading.style.display = 'none';
+          if (sentMessage) {
+            sentMessage.style.display = 'block';
+            sentMessage.innerText = 'Appointment scheduled successfully!';
+          }
+          this.reset();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          if (loading) loading.style.display = 'none';
+          if (errorMessage) {
+            errorMessage.style.display = 'block';
+            errorMessage.innerText = 'An error occurred. Please try again.';
+          }
+        });
     });
   }
-  
+
   if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
       if (!validateForm(this)) {
-        e.preventDefault();
         const errorAlert = this.querySelector('.alert-danger') || createErrorAlert(this);
         errorAlert.classList.remove('d-none');
+        return;
       }
+
+      const errorAlert = this.querySelector('.alert-danger');
+      if (errorAlert) errorAlert.classList.add('d-none');
+
+      const loading = this.querySelector('.loading');
+      const sentMessage = this.querySelector('.sent-message');
+      const errorMessage = this.querySelector('.error-message');
+
+      if (loading) loading.style.display = 'block';
+      if (sentMessage) sentMessage.style.display = 'none';
+      if (errorMessage) errorMessage.style.display = 'none';
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (loading) loading.style.display = 'none';
+          if (sentMessage) {
+            sentMessage.style.display = 'block';
+            sentMessage.innerText = 'Your message has been sent. Thank you!';
+          }
+          this.reset();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          if (loading) loading.style.display = 'none';
+          if (errorMessage) {
+            errorMessage.style.display = 'block';
+            errorMessage.innerText = 'An error occurred. Please try again.';
+          }
+        });
     });
   }
-  
+
   function createErrorAlert(form) {
     const alertDiv = document.createElement('div');
     alertDiv.className = 'alert alert-danger mt-3';
@@ -143,16 +239,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Real-time form validation
   document.querySelectorAll('input, textarea, select').forEach(input => {
-    input.addEventListener('blur', function() {
+    input.addEventListener('blur', function () {
       if (this.hasAttribute('required') && !this.value.trim()) {
         this.classList.add('is-invalid');
       } else {
         this.classList.remove('is-invalid');
       }
     });
-    
+
     // Clear error on input
-    input.addEventListener('input', function() {
+    input.addEventListener('input', function () {
       if (this.classList.contains('is-invalid')) {
         this.classList.remove('is-invalid');
       }
@@ -162,15 +258,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Navbar active state based on scroll position
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-  
+
   function updateActiveNavLink() {
     const scrollPosition = window.scrollY + 100;
-    
+
     sections.forEach(section => {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       const sectionId = section.getAttribute('id');
-      
+
       if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
         navLinks.forEach(link => {
           link.classList.remove('active');
@@ -181,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  
+
   window.addEventListener('scroll', updateActiveNavLink);
 
   // FAQ accordion enhancement
@@ -233,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Bootstrap tooltips
   if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function(tooltipTriggerEl) {
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl);
     });
   }
@@ -241,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Bootstrap popovers
   if (typeof bootstrap !== 'undefined' && bootstrap.Popover) {
     const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    popoverTriggerList.map(function(popoverTriggerEl) {
+    popoverTriggerList.map(function (popoverTriggerEl) {
       return new bootstrap.Popover(popoverTriggerEl);
     });
   }

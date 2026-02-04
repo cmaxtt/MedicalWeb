@@ -4,6 +4,7 @@
   "description": "Static medical website replica",
   "main": "index.html",
   "scripts": {
+    "start": "node server.js",
     "dev": "live-server --port=8080 --open=.",
     "htmlhint": "htmlhint \"**/*.html\"",
     "stylelint": "stylelint \"**/*.css\"",
@@ -12,16 +13,27 @@
     "test": "echo \"No tests configured. Run 'npm run lint' for code quality checks.\"",
     "build": "echo \"No build step defined. Use minification commands if needed.\""
   },
-  "keywords": ["medical", "website", "static", "bootstrap"],
+  "keywords": [
+    "medical",
+    "website",
+    "static",
+    "bootstrap"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "live-server": "^1.2.2",
-    "htmlhint": "^1.1.4",
-    "stylelint": "^16.2.1",
-    "stylelint-config-standard": "^36.0.0",
     "eslint": "^9.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.1"
+    "eslint-plugin-import": "^2.29.1",
+    "htmlhint": "^1.1.4",
+    "live-server": "^1.2.2",
+    "stylelint": "^16.2.1",
+    "stylelint-config-standard": "^36.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "sqlite3": "^5.1.7"
   }
 }
