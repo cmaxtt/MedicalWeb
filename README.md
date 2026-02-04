@@ -1,80 +1,86 @@
-# Medical Website Replica
+# Golden Care Medical Clinic Website
 
-A static website replica of a medical template (Medilab).
+A modern, full-stack medical clinic website built for **Golden Care Medical Clinic**. This application features a responsive frontend and a functional Node.js backend for handling appointments and inquiries.
 
-## Features
+![Golden Care Medical Clinic](img/hero-bg.jpg)
 
-- Responsive design using Bootstrap 5
-- Modern medical website layout
-- Interactive elements (smooth scrolling, counters, lightbox gallery)
-- Contact and appointment forms
-- Department tabs and doctor profiles
+## 🚀 Features
 
-## Project Structure
+### Frontend
+- **Modern & Responsive Design**: Built with **Bootstrap 5**, ensuring compatibility across all devices (Desktop, Tablet, Mobile).
+- **Interactive UI**:
+  - Smooth scrolling navigation.
+  - Dynamic counters for clinic statistics (Doctors, Departments, Awards).
+  - Lightbox gallery for facility images.
+  - FAQs accordion.
+- **Key Sections**: Home, About Us, Services, Departments, Doctors, Contact.
+
+### Backend
+- **Node.js & Express Server**: Serves the application and handles API requests.
+- **SQLite Database**: Automatically creates and manages a local database (`medical.db`) to store:
+  - **Appointments**: Patient name, contact info, chosen doctor/department, date, and message.
+  - **Contact Messages**: General inquiries from the contact form.
+- **REST API**:
+  - `POST /api/appointments`: Saves new appointment requests.
+  - `POST /api/contact`: Saves general contact messages.
+
+## 🛠️ Technology Stack
+
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+), Bootstrap 5.3
+- **Backend**: Node.js, Express.js
+- **Database**: SQLite3
+- **Libraries**:
+  - `sqlite3`: Database driver.
+  - `body-parser` & `cors`: Middleware.
+  - `aos`: Animate On Scroll.
+  - `glightbox`: Lightbox media gallery.
+  - `purecounter`: Numeric counters.
+
+## ⚙️ Installation & Setup
+
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/cmaxtt/MedicalWeb.git
+    cd MedicalWeb
+    ```
+
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the Application**
+    This will start the Node.js server (serving both the frontend and API).
+    ```bash
+    npm start
+    ```
+
+4.  **Access the Website**
+    Open your browser and navigate to:
+    ```
+    http://localhost:3000
+    ```
+
+## 📂 Project Structure
 
 ```
 /
-├── index.html          # Main HTML page
-├── css/                # Custom CSS styles
-├── js/                 # JavaScript files
-├── img/                # Images and assets
-├── AGENTS.md           # Guidelines for AI agents
-└── package.json        # Development dependencies
+├── server.js           # Main Entry Point: Node.js/Express Server & DB Logic
+├── medical.db          # SQLite Database (Auto-created on first run)
+├── index.html          # Main Frontend Page
+├── package.json        # Dependencies & Scripts
+├── css/                # Custom Stylesheets
+├── js/                 # Client-side JavaScript (Form handling, UI logic)
+├── img/                # Images & Assets
+└── AGENTS.md           # Developer Guidelines
 ```
 
-## Getting Started
+## 📝 Usage
 
-### Prerequisites
-- Node.js (optional, for development tools)
-- Python 3 (optional, for simple HTTP server)
+- **Making an Appointment**: Fill out the form in the "Appointment" section. The data is validated and sent to the backend database.
+- **Contacting the Clinic**: Use the form in the "Contact" section.
+- **Database**: All submissions are stored in `medical.db`. You can view them using any SQLite viewer (e.g., DB Browser for SQLite) or by extending the backend to include an admin dashboard.
 
-### Installation
+## 📄 License
 
-1. Clone the repository
-2. Install dependencies (optional):
-   ```bash
-   npm install
-   ```
-
-### Development
-
-Start a local development server:
-
-```bash
-npm run dev
-# or
-npx live-server --port=8080
-# or
-python -m http.server 8000
-```
-
-### Linting
-
-Check code quality:
-
-```bash
-npm run lint
-# or individually:
-npm run htmlhint
-npm run stylelint
-npm run eslint
-```
-
-## Browser Support
-
-- Chrome (last 2 versions)
-- Firefox (last 2 versions)
-- Safari (last 2 versions)
-- Edge (last 2 versions)
-
-## Accessibility
-
-This website aims to meet WCAG 2.1 AA standards with:
-- Semantic HTML structure
-- Keyboard navigation support
-- ARIA labels where needed
-- Sufficient color contrast
-
-## License
-
-MIT
+MIT License.
